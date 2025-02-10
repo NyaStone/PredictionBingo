@@ -1,21 +1,13 @@
 import { useContext } from "react";
 import { SizeContext } from "../contexts/SizeContext";
+import { GridItem } from "./GridItem";
 
 function Grid() {
   const [size] = useContext(SizeContext);
-  const gridItems = Array(size * size).fill(null).map((_, index) => (
-    <div 
-      key={index} 
-      className="bg-gray-800 p-4 rounded-lg shadow-lg aspect-square flex items-center justify-center
-                 text-gray-200 border border-gray-700 hover:border-indigo-500 
-                 transition-all duration-200 hover:bg-gray-700 cursor-pointer"
-    >
-      {index + 1}
-    </div>
-  ));
+  const gridItems = Array(size * size).fill(null).map((_, index) => (<GridItem key={index} row={Math.floor(index / size)} column={index % size} />));
 
   return (
-    <div className="container mx-auto p-8">
+    <div className="container mx-auto p-8 bg-gray-700 rounded-xl">
       <div 
         className="grid gap-4" 
         style={{
