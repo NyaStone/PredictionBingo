@@ -55,6 +55,7 @@ export const ItemCard = ({ item, index }: { item: string, index: number }) => {
     };
 
     return <div 
+        id={`item-${index}`}
         onClick={handleClick}
         className={`p-4 rounded-lg shadow-md relative
                  border border-gray-700 hover:border-indigo-500
@@ -63,7 +64,12 @@ export const ItemCard = ({ item, index }: { item: string, index: number }) => {
                     ? 'bg-green-300 hover:bg-green-400 text-gray-900' 
                     : 'bg-gray-800 hover:bg-gray-700 text-gray-200'}`}
     >
-        {`${item} ${row}, ${column}: ${index}`}
+        <div className="hidden md:block">
+            {item}
+        </div>
+        <div className="block md:hidden">
+            <span className="font-bold">#{index + 1}</span> {item}
+        </div>
         <button
             onClick={(e) => {
                 e.stopPropagation();
