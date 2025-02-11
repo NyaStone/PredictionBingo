@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState, useEffect } from "react";
 import { SizeContext } from "./SizeContext";
 
 type GridState = [GridContextType, React.Dispatch<React.SetStateAction<GridContextType>>]
@@ -7,14 +7,20 @@ export type GridContextType = boolean[][];
 
 export const GridContext = createContext<GridState>([[], () => {}] as GridState);
 
+function generateGrid(size: number): GridContextType {
+    return Array(size).fill(null)
+        .map(() => Array(size).fill(false));
+}
+
 export const GridContextProvider = ({children}: {children?: ReactNode}) => {
     const [size] = useContext(SizeContext);
-    const initialGrid = [];
-    for (let i = 0; i < size; i++)
-        initialGrid.push(Array(size).fill(false));
-    const gridState = useState<GridContextType>(initialGrid);
+    const [gridState, setGridState] = useState<GridContextType>(generateGrid(size));
 
-    return <GridContext.Provider value={gridState}>
+    useEffect(() => {
+        setGridState(generateGrid(size));
+    }, [size]);
+
+    return <GridContext.Provider value={[gridState, setGridState]}>
         {children}
     </GridContext.Provider>;
 }

@@ -20,25 +20,35 @@ export function shufflePlacement(placement: number[][]): number[][] {
 }
 
 export const ItemPlacementContextProvider = ({ children }: { children: React.ReactNode }) => {
+    const [size] = useContext(SizeContext);
+    
     function generateItemPlacement(size: number): number[][] {
+        const newPlacement: number[][] = Array(size).fill(null)
+            .map(() => Array(size).fill(0));
+        
+        // Fill with sequential indices
         let index = 0;
-        const newPlacement: number[][] = [];
         for (let i = 0; i < size; i++) {
-            newPlacement.push([]);
             for (let j = 0; j < size; j++) {
-                newPlacement[i].push(index++);
+                newPlacement[i][j] = index++;
             }
         }
         return shufflePlacement(newPlacement);
     }
-    
-    const [size] = useContext(SizeContext);
-    const [itemPlacement, setItemPlacement] = useState<ItemPlacementState>(generateItemPlacement(size));
+
+    const [itemPlacement, setItemPlacement] = useState<ItemPlacementState>(
+        () => generateItemPlacement(size)
+    );
 
     useEffect(() => {
-        setItemPlacement(generateItemPlacement(size));
+        const newPlacement = generateItemPlacement(size);
+        setItemPlacement(newPlacement);
     }, [size]);
 
+    // Add safety check
+    if (!itemPlacement || itemPlacement.length !== size) {
+        return null; // or a loading state
+    }
 
     return (
         <ItemPlacementContext.Provider value={[itemPlacement, setItemPlacement]}>
