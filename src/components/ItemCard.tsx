@@ -2,18 +2,46 @@ import { useContext } from "react";
 import { ItemsContext } from "../contexts/ItemsContext";
 import { SizeContext } from "../contexts/SizeContext";
 import { GridContext } from "../contexts/GridContext";
+import { ItemPlacementContext } from "../contexts/ItemPlacementContext";
 
 
 export const ItemCard = ({ item, index }: { item: string, index: number }) => {
     const [items, setItems] = useContext(ItemsContext);
     const [size] = useContext(SizeContext);
     const [gridState, setGridState] = useContext(GridContext);
-    const row = Math.floor(index / size);
-    const column = index % size;
-    const isChecked = gridState[row][column];
+    const [itemPlacement] = useContext(ItemPlacementContext);
+    
+    // Find row and column by searching through itemPlacement
+    let row = -1;
+    let column = -1;
+    
+    // Search for the index in the itemPlacement array
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            if (itemPlacement[i][j] === index) {
+                row = i;
+                column = j;
+                break;
+            }
+        }
+        if (row !== -1) break;
+    }
+
+    const isChecked = row !== -1 && column !== -1 ? gridState[row][column] : false;
 
     const handleDelete = (indexToDelete: number) => {
+        // Update items list
         setItems(items.filter((_, index) => index !== indexToDelete));
+        
+        // Update grid state if item was found in the grid
+        if (row !== -1 && column !== -1) {
+            const newGridState = gridState.map((r, i) => 
+                i === row ? r.map((c, j) => 
+                    j === column ? false : c
+                ) : r
+            );
+            setGridState(newGridState);
+        }
     };
 
     const handleClick = (e: React.MouseEvent) => {
@@ -35,7 +63,7 @@ export const ItemCard = ({ item, index }: { item: string, index: number }) => {
                     ? 'bg-green-300 hover:bg-green-400 text-gray-900' 
                     : 'bg-gray-800 hover:bg-gray-700 text-gray-200'}`}
     >
-        {item}
+        {`${item} ${row}, ${column}: ${index}`}
         <button
             onClick={(e) => {
                 e.stopPropagation();

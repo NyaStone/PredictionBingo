@@ -1,4 +1,5 @@
 import { GridContextProvider } from "./GridContext";
+import { ItemPlacementContextProvider } from "./ItemPlacementContext";
 import { ItemsContextProvider } from "./ItemsContext";
 import { SizeContextProvider } from "./SizeContext";
 
@@ -7,7 +8,9 @@ export function ContextsProvider({children}: {children: React.ReactNode}) {
         <SizeContextProvider>
             <GridContextProvider>
                 <ItemsContextProvider>
-                    {children}
+                    <ItemPlacementContextProvider>
+                        {children}
+                    </ItemPlacementContextProvider>
                 </ItemsContextProvider>
             </GridContextProvider>
         </SizeContextProvider>
