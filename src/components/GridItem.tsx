@@ -23,9 +23,18 @@ export function GridItem({row, column}: {row: number, column: number}) {
         }
     };
 
+    const scrollToItem = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (!isEmpty) {
+            const element = document.getElementById(`item-${index}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    };
+
     return <div 
-      onClick={handleClick}
-      className={`p-4 rounded-lg shadow-lg aspect-square flex items-center justify-center
+      className={`rounded-lg shadow-lg aspect-square
                  border border-gray-700 
                  transition-all duration-200
                  overflow-hidden
@@ -37,11 +46,19 @@ export function GridItem({row, column}: {row: number, column: number}) {
                        cursor-pointer hover:border-indigo-500`
                  }`}
     >
-      <span className="hidden md:block text-center w-full">
-        {item}
-      </span>
-      <span className="block md:hidden text-center w-full">
-        {index + 1}
-      </span>
+    <div
+        onClick={handleClick} 
+        className="w-full h-full items-center justify-center hidden md:flex">
+        <span>
+          {item}
+        </span>
+    </div>
+    <div
+        onClick={scrollToItem}
+        className="w-full h-full flex items-center justify-center md:hidden">
+      <a href={`#item-${index}`}>
+          #{index + 1}
+        </a>
+      </div>
     </div>
 }
