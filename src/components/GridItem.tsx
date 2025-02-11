@@ -1,12 +1,10 @@
 import { useContext } from "react";
 import { ItemsContext } from "../contexts/ItemsContext";
-import { SizeContext } from "../contexts/SizeContext";
 import { GridContext } from "../contexts/GridContext";
 import { ItemPlacementContext } from "../contexts/ItemPlacementContext";
 
 export function GridItem({row, column}: {row: number, column: number}) {
     const [items] = useContext(ItemsContext);
-    const [size] = useContext(SizeContext);
     const [gridState, setGridState] = useContext(GridContext);
     const [itemPlacement] = useContext(ItemPlacementContext);
     const index = itemPlacement[row][column];
