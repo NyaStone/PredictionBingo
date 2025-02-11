@@ -11,6 +11,7 @@ export function ItemList() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const isListFull = items.length >= size * size;
+    const isFiltering = searchTerm.trim().length > 0;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -82,16 +83,18 @@ export function ItemList() {
                     </div>
                 </div>
 
-                <button
-                    onClick={() => setShowMobileList(!showMobileList)}
-                    className="w-full mb-4 bg-gray-800 text-gray-200 px-4 py-2 rounded-lg
-                             border border-gray-600 hover:border-indigo-500
-                             transition-all duration-200"
-                >
-                    {showMobileList ? 'Hide List' : 'Show List'}
-                </button>
+                {!isFiltering && (
+                    <button
+                        onClick={() => setShowMobileList(!showMobileList)}
+                        className="w-full mb-4 bg-gray-800 text-gray-200 px-4 py-2 rounded-lg
+                                 border border-gray-600 hover:border-indigo-500
+                                 transition-all duration-200"
+                    >
+                        {showMobileList ? 'Hide List' : 'Show List'}
+                    </button>
+                )}
                 
-                {showMobileList && (
+                {(showMobileList || isFiltering) && (
                     <div className="grid grid-cols-1 gap-4">
                         {filterItems([...items]).reverse().map((item, index) => (
                             <ItemCard 
