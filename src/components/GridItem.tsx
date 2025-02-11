@@ -39,6 +39,11 @@ export function GridItem({row, column}: {row: number, column: number}) {
                        cursor-pointer hover:border-indigo-500`
                  }`}
     >
-      {item}
+      <span className="hidden md:block text-center w-full">
+        {item}
+      </span>
+      <span className="block md:hidden text-center w-full">
+        {index + 1}
+      </span>
     </div>
 }

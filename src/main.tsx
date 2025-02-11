@@ -8,10 +8,7 @@ import { ItemList } from './components/ItemList.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ContextsProvider>
-      <MainSection>
-        <ItemList/>
-        <Grid/>
-      </MainSection>
+      <MainSection/>
     </ContextsProvider>
   </StrictMode>
 )
