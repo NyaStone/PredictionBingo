@@ -60,15 +60,26 @@ export function ItemList() {
 
             <div className="block md:hidden">
                 <div className="mb-4">
-                    <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-gray-800 text-gray-200 p-2 rounded-lg
-                                 border border-gray-600 focus:border-indigo-500
-                                 focus:outline-none transition-colors"
-                        placeholder="Search by text or number..."
-                    />
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="flex-1 bg-gray-700 text-gray-200 p-2 rounded-lg
+                                     border border-gray-500 focus:border-indigo-500
+                                     focus:outline-none transition-colors"
+                            placeholder="Search by text or number..."
+                        />
+                        <button
+                            onClick={() => setSearchTerm("")}
+                            className="bg-gray-800 text-gray-200 px-4 py-2 rounded-lg
+                                     border border-gray-600 hover:border-indigo-500
+                                     transition-all duration-200"
+                            type="button"
+                        >
+                            Clear
+                        </button>
+                    </div>
                 </div>
 
                 <button
