@@ -41,42 +41,41 @@ export const Settings = memo(() => {
                         <label className="text-gray-200">
                             Grid Size (minimum: {minSize})
                         </label>
-                        <div className="flex gap-2 items-center">
+                        <div className="flex flex-col md:flex-row md:gap-12 gap-4 items-center">
+                            <div className="flex gap-4 items-center justify-center w-full md:w-auto">
+                                <button
+                                    onClick={handleDecrease}
+                                    disabled={size <= minSize}
+                                    className={`px-6 py-2 rounded-lg transition-colors
+                                            ${size <= minSize 
+                                                ? 'bg-gray-600 cursor-not-allowed opacity-50' 
+                                                : 'bg-indigo-600 hover:bg-indigo-700'} 
+                                            text-white`}
+                                >
+                                    -
+                                </button>
+                                <span className="text-gray-200 text-xl font-bold w-12 text-center">
+                                    {size}
+                                </span>
+                                <button
+                                    onClick={handleIncrease}
+                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg
+                                            hover:bg-indigo-700 transition-colors"
+                                >
+                                    +
+                                </button>
+                            </div>
                             <button
-                                onClick={handleDecrease}
-                                disabled={size <= minSize}
-                                className={`px-4 py-2 rounded-lg transition-colors
-                                        ${size <= minSize 
-                                            ? 'bg-gray-600 cursor-not-allowed opacity-50' 
-                                            : 'bg-indigo-600 hover:bg-indigo-700'} 
-                                        text-white`}
+                                onClick={handleShuffle}
+                                className="w-full md:flex-1 bg-indigo-600 text-white px-6 py-2 rounded-lg
+                                        hover:bg-indigo-700 transition-colors max-w-[232px] md:max-w-none mx-auto md:mx-0"
                             >
-                                -
-                            </button>
-                            <span className="text-gray-200 text-xl font-bold w-12 text-center">
-                                {size}
-                            </span>
-                            <button
-                                onClick={handleIncrease}
-                                className="bg-indigo-600 text-white px-4 py-2 rounded-lg
-                                        hover:bg-indigo-700 transition-colors"
-                            >
-                                +
+                                Shuffle Grid
                             </button>
                         </div>
-                        <p className="text-gray-400 text-sm">
+                        <p className="text-gray-400 text-sm text-center md:text-left">
                             Total cells: {size * size}
                         </p>
-                    </div>
-                    
-                    <div className="flex flex-col gap-2">
-                        <button
-                            onClick={handleShuffle}
-                            className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg
-                                    hover:bg-indigo-700 transition-colors"
-                        >
-                            Shuffle Grid
-                        </button>
                     </div>
 
                     <TemplateControl />
