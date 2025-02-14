@@ -41,6 +41,16 @@ export const Settings = memo(() => {
     };
 
     const handleSave = () => {
+        // Check if there's an existing save
+        const existingSave = localStorage.getItem('predictionBingoState');
+        if (existingSave) {
+            const confirmSave = window.confirm(
+                'There is already a saved state. Do you want to overwrite it?'
+            );
+            if (!confirmSave) return;
+        }
+
+        // Proceed with save if confirmed or no existing save
         const gameState = {
             size,
             items,
@@ -48,10 +58,15 @@ export const Settings = memo(() => {
             grid,
             savedAt: new Date().toISOString()
         };
-        localStorage.setItem('predictionBingoState', JSON.stringify(gameState));
-        setHasSavedState(true);
-        setShowSaveSuccess(true);
-        setTimeout(() => setShowSaveSuccess(false), 2000);
+        
+        try {
+            localStorage.setItem('predictionBingoState', JSON.stringify(gameState));
+            setHasSavedState(true);
+            setShowSaveSuccess(true);
+            setTimeout(() => setShowSaveSuccess(false), 2000);
+        } catch (error) {
+            console.error('Failed to save state:', error);
+        }
     };
 
     const handleLoad = () => {
