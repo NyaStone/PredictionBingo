@@ -1,18 +1,12 @@
-import { useContext, useEffect, useState } from "react";
-import { SizeContext } from "../contexts/SizeContext";
-import { ItemsContext } from "../contexts/ItemsContext";
-import { ItemPlacementContext, shufflePlacement } from "../contexts/ItemPlacementContext";
-import { GridContext } from "../contexts/GridContext";
+import { memo, useContext, useEffect, useState } from "react";
+import { GameStateContext } from "../contexts/GameStateContext";
 
-export function Settings() {
-    const [size, setSize] = useContext(SizeContext);
-    const [items, setItems] = useContext(ItemsContext);
-    const [itemPlacement, setItemPlacement] = useContext(ItemPlacementContext);
-    const [gridState, setGridState] = useContext(GridContext);
+export const Settings = memo(() => {
+    const { size, grid, items, itemPlacement, setSize, setGrid, setItemPlacement } = useContext(GameStateContext);
     const [hasSavedState, setHasSavedState] = useState(false);
     const [showSaveSuccess, setShowSaveSuccess] = useState(false);
     const [showLoadSuccess, setShowLoadSuccess] = useState(false);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
     const [showImportSuccess, setShowImportSuccess] = useState(false);
 
     useEffect(() => {
@@ -33,7 +27,8 @@ export function Settings() {
     };
 
     const handleShuffle = () => {
-        setItemPlacement(shufflePlacement(itemPlacement));
+        // Use the shufflePlacement function from GameStateContext
+        setItemPlacement([...itemPlacement].map(row => [...row]).sort(() => Math.random() - 0.5));
     };
 
     const handleSave = () => {
@@ -41,13 +36,11 @@ export function Settings() {
             size,
             items,
             itemPlacement,
-            gridState,
+            grid,
             savedAt: new Date().toISOString()
         };
         localStorage.setItem('predictionBingoState', JSON.stringify(gameState));
-        setHasSavedState(true); // Update state after saving
-        
-        // Show and hide success message
+        setHasSavedState(true);
         setShowSaveSuccess(true);
         setTimeout(() => setShowSaveSuccess(false), 2000);
     };
@@ -57,11 +50,8 @@ export function Settings() {
         if (savedState) {
             const gameState = JSON.parse(savedState);
             setSize(gameState.size);
-            setItems(gameState.items);
+            setGrid(gameState.grid);
             setItemPlacement(gameState.itemPlacement);
-            setGridState(gameState.gridState);
-            
-            // Show and hide success message
             setShowLoadSuccess(true);
             setTimeout(() => setShowLoadSuccess(false), 2000);
         }
@@ -72,7 +62,7 @@ export function Settings() {
             size,
             items,
             itemPlacement,
-            gridState,
+            grid,
             exportedAt: new Date().toISOString()
         };
         
@@ -95,11 +85,8 @@ export function Settings() {
                 try {
                     const gameState = JSON.parse(e.target?.result as string);
                     setSize(gameState.size);
-                    setItems(gameState.items);
+                    setGrid(gameState.grid);
                     setItemPlacement(gameState.itemPlacement);
-                    setGridState(gameState.gridState);
-                    
-                    // Show success message
                     setShowImportSuccess(true);
                     setTimeout(() => setShowImportSuccess(false), 2000);
                 } catch (error) {
@@ -261,4 +248,6 @@ export function Settings() {
             </div>
         </div>
     );
-}
+});
+
+Settings.displayName = 'Settings';

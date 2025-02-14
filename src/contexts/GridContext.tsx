@@ -1,7 +1,7 @@
-import { createContext, ReactNode, useContext, useState, useEffect } from "react";
+import { createContext, ReactNode, useContext, useState, useEffect, useRef, useCallback } from "react";
 import { SizeContext } from "./SizeContext";
 
-type GridState = [GridContextType, React.Dispatch<React.SetStateAction<GridContextType>>]
+type GridState = [GridContextType, (newState: GridContextType) => void]
 
 export type GridContextType = boolean[][];
 
@@ -14,13 +14,22 @@ function generateGrid(size: number): GridContextType {
 
 export const GridContextProvider = ({children}: {children?: ReactNode}) => {
     const [size] = useContext(SizeContext);
-    const [gridState, setGridState] = useState<GridContextType>(generateGrid(size));
+    const gridStateRef = useRef<GridContextType>(generateGrid(size));
+    const [, forceUpdate] = useState({});
+
+    const setGridState = useCallback((newState: GridContextType) => {
+        gridStateRef.current = newState;
+        forceUpdate({});
+    }, []);
 
     useEffect(() => {
-        setGridState(generateGrid(size));
+        gridStateRef.current = generateGrid(size);
+        forceUpdate({});
     }, [size]);
 
-    return <GridContext.Provider value={[gridState, setGridState]}>
-        {children}
-    </GridContext.Provider>;
-}
+    return (
+        <GridContext.Provider value={[gridStateRef.current, setGridState]}>
+            {children}
+        </GridContext.Provider>
+    );
+};

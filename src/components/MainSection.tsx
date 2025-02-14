@@ -1,4 +1,4 @@
-import Grid from "./Grid";
+import { Grid } from "./Grid";
 import { ItemList } from "./ItemList";
 import { Settings } from "./Settings";
 

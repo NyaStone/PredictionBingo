@@ -1,13 +1,21 @@
-import { createContext, useState } from "react";
+import { createContext, useRef, useCallback, useState } from "react";
 
-type SizeState = [number, React.Dispatch<React.SetStateAction<number>>];
+type SizeState = [number, (newSize: number) => void];
 
 export const SizeContext = createContext<SizeState>([0, () => {}] as SizeState);
 
 export const SizeContextProvider = ({children}: {children: React.ReactNode}) => {
-    const sizeState = useState(5);
+    const sizeRef = useRef<number>(5);
+    const [, forceUpdate] = useState({});
 
-    return <SizeContext.Provider value={sizeState}>
-        {children}
-    </SizeContext.Provider>
-}
+    const setSize = useCallback((newSize: number) => {
+        sizeRef.current = newSize;
+        forceUpdate({});
+    }, []);
+
+    return (
+        <SizeContext.Provider value={[sizeRef.current, setSize]}>
+            {children}
+        </SizeContext.Provider>
+    );
+};

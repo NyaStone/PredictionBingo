@@ -1,9 +1,9 @@
-import { createContext, Dispatch, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useCallback, useState } from "react";
 import { SizeContext } from "./SizeContext";
 
 export type ItemPlacementState = number[][];
 
-export const ItemPlacementContext = createContext<[ItemPlacementState, Dispatch<ItemPlacementState>]>([[], () => {}]);
+export const ItemPlacementContext = createContext<[ItemPlacementState, (newState: ItemPlacementState) => void]>([[], () => {}]);
 
 export function shufflePlacement(placement: number[][]): number[][] {
     const newPlacement = placement.map((row) => [...row]);
@@ -21,7 +21,14 @@ export function shufflePlacement(placement: number[][]): number[][] {
 
 export const ItemPlacementContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [size] = useContext(SizeContext);
-    
+    const itemPlacementRef = useRef<ItemPlacementState>(generateItemPlacement(size));
+    const [, forceUpdate] = useState({});
+
+    const setItemPlacement = useCallback((newState: ItemPlacementState) => {
+        itemPlacementRef.current = newState;
+        forceUpdate({});
+    }, []);
+
     function generateItemPlacement(size: number): number[][] {
         const newPlacement: number[][] = Array(size).fill(null)
             .map(() => Array(size).fill(0));
@@ -36,22 +43,18 @@ export const ItemPlacementContextProvider = ({ children }: { children: React.Rea
         return shufflePlacement(newPlacement);
     }
 
-    const [itemPlacement, setItemPlacement] = useState<ItemPlacementState>(
-        () => generateItemPlacement(size)
-    );
-
     useEffect(() => {
-        const newPlacement = generateItemPlacement(size);
-        setItemPlacement(newPlacement);
+        itemPlacementRef.current = generateItemPlacement(size);
+        forceUpdate({});
     }, [size]);
 
     // Add safety check
-    if (!itemPlacement || itemPlacement.length !== size) {
-        return null; // or a loading state
+    if (!itemPlacementRef.current || itemPlacementRef.current.length !== size) {
+        return null;
     }
 
     return (
-        <ItemPlacementContext.Provider value={[itemPlacement, setItemPlacement]}>
+        <ItemPlacementContext.Provider value={[itemPlacementRef.current, setItemPlacement]}>
             {children}
         </ItemPlacementContext.Provider>
     );

@@ -1,23 +1,25 @@
-import { useContext } from "react";
-import { SizeContext } from "../contexts/SizeContext";
-import { GridItem } from "./GridItem";
+import { memo, useContext } from 'react';
+import { GameStateContext } from '../contexts/GameStateContext';
+import { GridItem } from './GridItem';
 
-function Grid() {
-  const [size] = useContext(SizeContext);
-  const gridItems = Array(size * size).fill(null).map((_, index) => (<GridItem key={index} row={Math.floor(index / size)} column={index % size} />));
+export const Grid = memo(() => {
+    const { size, grid } = useContext(GameStateContext);
 
-  return (
-    <div className="container mx-auto p-8 bg-gray-700 rounded-xl mb-8">
-      <div 
-        className="grid gap-4" 
-        style={{
-          gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`
-        }}
-      >
-        {gridItems}
-      </div>
-    </div>
-  );
-}
+    return (
+        <div className="grid gap-2 mb-4" style={{
+            gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`
+        }}>
+            {grid.map((row, i) => 
+                row.map((_, j) => (
+                    <GridItem 
+                        key={`${i}-${j}`}
+                        row={i}
+                        column={j}
+                    />
+                ))
+            )}
+        </div>
+    );
+});
 
-export default Grid;
+Grid.displayName = 'Grid';

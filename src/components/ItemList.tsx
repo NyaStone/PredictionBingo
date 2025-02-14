@@ -1,14 +1,11 @@
-import { useContext, useState } from "react";
-import { ItemsContext } from "../contexts/ItemsContext";
-import { SizeContext } from "../contexts/SizeContext";
+import { memo, useContext, useState } from "react";
+import { GameStateContext } from "../contexts/GameStateContext";
 import { ItemCard } from "./ItemCard";
 
-export function ItemList() {
-    const [size] = useContext(SizeContext);
-    const [items, setItems] = useContext(ItemsContext);
+export const ItemList = memo(() => {
+    const { size, items, setItems, searchTerm, setSearchTerm } = useContext(GameStateContext);
     const [newItem, setNewItem] = useState("");
     const [showMobileList, setShowMobileList] = useState(true);
-    const [searchTerm, setSearchTerm] = useState("");
 
     const isListFull = items.length >= size * size;
     const isFiltering = searchTerm.trim().length > 0;
@@ -118,4 +115,6 @@ export function ItemList() {
             </div>
         </div>
     );
-}
+});
+
+ItemList.displayName = 'ItemList';
