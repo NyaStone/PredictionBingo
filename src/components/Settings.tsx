@@ -2,7 +2,16 @@ import { memo, useContext, useEffect, useState } from "react";
 import { GameStateContext } from "../contexts/GameStateContext";
 
 export const Settings = memo(() => {
-    const { size, grid, items, itemPlacement, setSize, setGrid, setItemPlacement } = useContext(GameStateContext);
+    const { 
+        size, 
+        grid, 
+        items, 
+        itemPlacement, 
+        setSize, 
+        setGrid, 
+        setItems, 
+        setItemPlacement 
+    } = useContext(GameStateContext);
     const [hasSavedState, setHasSavedState] = useState(false);
     const [showSaveSuccess, setShowSaveSuccess] = useState(false);
     const [showLoadSuccess, setShowLoadSuccess] = useState(false);
@@ -46,11 +55,19 @@ export const Settings = memo(() => {
     };
 
     const handleLoad = () => {
+        if (items.length > 0) {
+            const confirmLoad = window.confirm(
+                'Loading a save will override your current items and grid state. Are you sure you want to continue?'
+            );
+            if (!confirmLoad) return;
+        }
+
         const savedState = localStorage.getItem('predictionBingoState');
         if (savedState) {
             const gameState = JSON.parse(savedState);
             setSize(gameState.size);
             setGrid(gameState.grid);
+            setItems(gameState.items);
             setItemPlacement(gameState.itemPlacement);
             setShowLoadSuccess(true);
             setTimeout(() => setShowLoadSuccess(false), 2000);
@@ -87,6 +104,7 @@ export const Settings = memo(() => {
                     setSize(gameState.size);
                     setGrid(gameState.grid);
                     setItemPlacement(gameState.itemPlacement);
+                    setItems(gameState.items);
                     setShowImportSuccess(true);
                     setTimeout(() => setShowImportSuccess(false), 2000);
                 } catch (error) {
