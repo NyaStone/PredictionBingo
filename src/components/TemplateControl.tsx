@@ -7,6 +7,7 @@ type Template = {
     items: string[];
     itemPlacement: number[][];
     grid: boolean[][];
+    randomize?: boolean;  // Add the optional randomize flag
 };
 
 export const TemplateControl = memo(() => {
@@ -31,6 +32,37 @@ export const TemplateControl = memo(() => {
         }
     }, []);
 
+    const randomizeState = (template: Template) => {
+        // Randomize items if flag is present
+        const randomizedItems = template.randomize 
+            ? [...template.items].sort(() => Math.random() - 0.5)
+            : template.items;
+
+        // Create and randomize grid positions if flag is present
+        const positions = [];
+        for (let i = 0; i < template.size; i++) {
+            for (let j = 0; j < template.size; j++) {
+                positions.push(template.itemPlacement[i][j]);
+            }
+        }
+        
+        const randomizedPositions = template.randomize
+            ? [...positions].sort(() => Math.random() - 0.5)
+            : positions;
+
+        // Reconstruct the grid
+        const newPlacement = Array(template.size).fill(null).map((_, i) =>
+            Array(template.size).fill(null).map((_, j) => 
+                randomizedPositions[i * template.size + j]
+            )
+        );
+
+        return {
+            items: randomizedItems,
+            itemPlacement: newPlacement
+        };
+    };
+
     const handleLoadTemplate = async () => {
         if (items.length > 0) {
             const confirmLoad = window.confirm(
@@ -44,11 +76,12 @@ export const TemplateControl = memo(() => {
             if (!response.ok) throw new Error('Failed to load template');
             
             const template: Template = await response.json();
+            const { items: randomizedItems, itemPlacement: randomizedPlacement } = randomizeState(template);
             
-            setItems(template.items);
+            setItems(randomizedItems);
             setSize(template.size);
             setGrid(template.grid);
-            setItemPlacement(template.itemPlacement);
+            setItemPlacement(randomizedPlacement);
             
             setShowLoadSuccess(true);
             setTimeout(() => setShowLoadSuccess(false), 2000);
@@ -60,7 +93,7 @@ export const TemplateControl = memo(() => {
     return (
         <div className="flex flex-col gap-2">
             <label className="text-gray-200">Templates</label>
-            <div className="grid grid-cols-[1fr,auto] gap-2">
+            <div className="grid grid-cols-[1fr,auto] md:grid-cols-[1fr,200px] gap-2">
                 <select
                     value={selectedTemplate}
                     onChange={(e) => setSelectedTemplate(e.target.value)}

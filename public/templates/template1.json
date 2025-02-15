@@ -1,7 +1,0 @@
-{
-    "name": "Template 1",
-    "size": 5,
-    "items": ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"],
-    "itemPlacement": [[0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4]],
-    "grid": [[false, false, false, false, false], [false, false, false, false, false], [false, false, false, false, false], [false, false, false, false, false], [false, false, false, false, false]]
-}
