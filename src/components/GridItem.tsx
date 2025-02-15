@@ -29,19 +29,17 @@ export function GridItem({row, column}: {row: number, column: number}) {
     const scrollToItem = (e: React.MouseEvent) => {
         e.preventDefault();
         if (!isEmpty) {
-            // Clear any previous search term
-            setSearchTerm("");
-            // Ensure mobile list is visible
+            // Ensure mobile list is visible and set search term
             setShowMobileList(true);
+            setSearchTerm((index + 1).toString());
             
-            // Small delay to ensure DOM is updated before scrolling
-            setTimeout(() => {
+            // Scroll to item after state updates
+            requestAnimationFrame(() => {
                 const element = document.getElementById(`item-${index}`);
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth' });
-                    setSearchTerm((index + 1).toString());
                 }
-            }, 0);
+            });
         }
     };
 
