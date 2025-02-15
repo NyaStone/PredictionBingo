@@ -3,24 +3,31 @@ import { GameStateContext } from "../contexts/GameStateContext";
 import { ItemCard } from "./ItemCard";
 
 export const ItemList = memo(() => {
-    const { size, items, setItems, searchTerm, setSearchTerm } = useContext(GameStateContext);
+    const { size, items, setItems, searchTerm, setSearchTerm, showOnlyGridItems } = useContext(GameStateContext);
     const [newItem, setNewItem] = useState("");
     const [showMobileList, setShowMobileList] = useState(true);
 
-    const isListFull = items.length >= size * size;
     const isFiltering = searchTerm.trim().length > 0;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (newItem.trim() && !isListFull) {
+        if (newItem.trim()) {
             setItems([...items, newItem.trim()]);
             setNewItem("");
         }
     };
 
     const filterItems = (items: string[]) => {
+        let filteredItems = [...items];
+        
+        // First apply grid filter if enabled
+        if (showOnlyGridItems) {
+            filteredItems = filteredItems.slice(0, size * size);
+        }
+
+        // Then apply search filter
         const trimmedSearch = searchTerm.trim().toLowerCase();
-        return items.filter((item, index) => {
+        return filteredItems.filter((item, index) => {
             const matchesText = item.toLowerCase().includes(trimmedSearch);
             const matchesIndex = (index + 1).toString() === trimmedSearch;
             return matchesText || matchesIndex;
@@ -35,27 +42,20 @@ export const ItemList = memo(() => {
                         type="text"
                         value={newItem}
                         onChange={(e) => setNewItem(e.target.value)}
-                        disabled={isListFull}
-                        className={`flex-1 bg-gray-800 text-gray-200 p-2 rounded-lg
+                        className="flex-1 bg-gray-800 text-gray-200 p-2 rounded-lg
                                  border border-gray-600 focus:border-indigo-500
-                                 focus:outline-none transition-colors
-                                 ${isListFull ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        placeholder={isListFull ? "List is full" : "Add new item..."}
+                                 focus:outline-none transition-colors"
+                        placeholder="Add new item..."
                     />
                     <button
                         type="submit"
-                        disabled={isListFull}
-                        className={`bg-indigo-600 text-white px-4 py-2 rounded-lg
-                                 transition-colors
-                                 ${isListFull 
-                                    ? 'opacity-50 cursor-not-allowed' 
-                                    : 'hover:bg-indigo-700'}`}
+                        className="bg-indigo-600 text-white px-4 py-2 rounded-lg
+                                 transition-colors hover:bg-indigo-700"
                     >
                         Add
                     </button>
                 </div>
             </form>
-
             <div className="block md:hidden">
                 <div className="mb-4">
                     <div className="flex gap-2">

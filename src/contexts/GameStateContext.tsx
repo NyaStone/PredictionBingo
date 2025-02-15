@@ -8,12 +8,14 @@ type GameState = {
   itemPlacement: number[][];
   searchTerm: string;
   showMobileList: boolean;
+  showOnlyGridItems: boolean;
   setSize: (size: number) => void;
   setGrid: (grid: boolean[][]) => void;
   setItems: (items: string[]) => void;
   setItemPlacement: (placement: number[][]) => void;
   setSearchTerm: (term: string) => void;
   setShowMobileList: (show: boolean) => void;
+  setShowOnlyGridItems: (value: boolean) => void;
 };
 
 export const GameStateContext = createContext<GameState>({} as GameState);
@@ -30,6 +32,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     showMobileList: true,
   });
   const [, forceUpdate] = useState({});
+  const [showOnlyGridItems, setShowOnlyGridItems] = useState(true);
 
   const setSize = useCallback((newSize: number) => {
     stateRef.current = {
@@ -76,12 +79,14 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
       itemPlacement: stateRef.current.itemPlacement,
       searchTerm: stateRef.current.searchTerm,
       showMobileList: stateRef.current.showMobileList,
+      showOnlyGridItems,
       setSize,
       setGrid,
       setItems,
       setItemPlacement,
       setSearchTerm,
       setShowMobileList,
+      setShowOnlyGridItems,
     }}>
       {children}
     </GameStateContext.Provider>
