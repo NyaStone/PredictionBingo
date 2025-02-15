@@ -18,7 +18,15 @@ function MainSection() {
                 </div>
             </div>
             <footer className="text-center text-gray-400 text-sm py-4">
-                Created by Pierre Lenertz
+                Created by {" "}
+                <a 
+                    href="https://github.com/NyaStone" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-indigo-400 hover:text-indigo-300 transition-colors"
+                >
+                    Pierre Lenertz
+                </a>
             </footer>
         </div>
     );
